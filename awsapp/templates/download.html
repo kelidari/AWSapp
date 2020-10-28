@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load socialaccount %}
+{% providers_media_js %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bucket Content</title>
+    <style>
+
+ body{
+     background-color: #dddddd;
+ }
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  background-color:aliceblue;
+  margin-left: 20px;
+
+
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+
+
+tr:nth-child(even) {
+  padding-left: 20px;
+    alignment: left ;
+}
+        h1{
+
+            color: darkblue;
+            padding-left: 10px;
+            font-family: Cambria;
+            padding: 5px;
+        }
+
+section {
+    margin-bottom: auto;
+}
+</style>
+
+</head>
+<body>
+ {% include 'messages.html' %}
+
+
+<h1> Existing file in "Kelidari" bucket </h1>
+{% csrf_token %}
+
+<table class="table table-striped">
+ <thead>
+    <tr>
+        <thead class="thead-dark">
+        <th scope="col">File Name</th>
+        <th scope="col">Download Link</th>
+        <th scope="col" >Delete</th>
+</thead>
+    </tr>
+    {% for key in key %}
+
+        <tr>
+            <td scope="row"> {{ key }} </td>
+            <td scope="row"><a onclick="{% url 'aws:download' %}" href="https://kelidari.s3.ir-thr-at1.arvanstorage.com/{{ key }}" >{{ key }}</a></td>
+            <td scope="row"> <a href="delete?key={{ key }}" class="btn btn-primary"  align="center" methods="POST" >delete</a> </td>
+        </tr>
+    {% endfor %}
+ </thead>
+</table>
+
+
+<div class="container">
+      <div class="section">
+        <h1 class="is-size-1" >Upload File</h1>
+          <h3 > Uploading new file in "Kelidari" bucket </h3>
+        <hr><br>
+        <form class="md-form" action="{% url 'aws:upload' %}" method="post" enctype="multipart/form-data" class="form">
+
+          {% csrf_token %}
+{#          <div class="field">#}
+{#            <div class="control">#}
+{#              <div class="file">#}
+{#                <label class="file-label">#}
+{#                    <div class="custom-file">#}
+{#                      <input type="file" class="custom-file-input" id="customFile" name="image_file">#}
+{#                         <label class="custom-file-label" for="customFile">Choose file</label>#}
+{#                    </div>#}
+{##}
+{#                  <span class="file-cta">#}
+{#                    <span class="file-label">select file to upload</span>#}
+{#                  </span>#}
+{#                </label>#}
+{#              </div>#}
+{#            </div>#}
+{#          </div>#}
+
+  <div class="custom-file">
+    <input type="file" class="custom-file-input" id="customFile" name="upload_file">
+    <label class="custom-file-label" for="customFile">Choose file...</label>
+
+  <br>
+          <div class="field">
+            <div class="control">
+              <input type="submit" value="Submit" class="button is-primary"  />
+            </div>
+          </div>
+  </div>
+        </form>
+      </div>
+      </div>
+ </div>
+</body>
+</html>
+    <script>
+// Add the following code if you want the name of the file appear on select
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
+
+{% endblock %}
